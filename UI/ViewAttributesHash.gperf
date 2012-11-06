@@ -1,0 +1,58 @@
+%{
+#include "ViewAttributesHash.h"
+#include <string.h>
+
+namespace UI {
+%}
+
+%struct-type
+struct ViewAttributeName
+%omit-struct-type
+%language=C++
+%readonly-tables
+%global-table
+%compare-strncmp
+%define class-name ViewAttributesHash
+%define lookup-function-name findAttributeImpl
+%define hash-function-name viewAttribteHashFunction
+%enum
+%%
+id, Attr_Id
+padding, Attr_Padding
+padding-left, Attr_PaddingLeft
+padding-right, Attr_PaddingRight
+padding-top, Attr_PaddingTop
+padding-bottom, Attr_PaddingBottom
+margin, Attr_Margin
+margin-left, Attr_MarginLeft
+margin-right, Attr_MarginRight
+margin-top, Attr_MarginTop
+margin-bottom, Attr_MarginBottom
+width, Attr_PositionWidth
+height, Attr_PositionHeight
+x, Attr_PositionX
+y, Attr_PositionY
+postion, Attr_Position
+border-color, Attr_BorderColor
+border-width, Attr_BorderWidth
+border-radius, Attr_BorderRadius
+valign, Attr_VAlign
+halign, Attr_HAlign
+background-color, Attr_BackgroundColor
+background-image, Attr_BackgroundImage
+background-postion, Attr_BackgroundPosition
+background-repeat, Attr_BackgroundRepeat
+font-size, Attr_FontSize
+font-family, Attr_FontFamily
+font-weight, Attr_FontWeight
+font-style, Attr_FontStyle
+text-align, Attr_TextAlign
+text-decoration, Attr_TextDecoration
+color, Attr_TextColor
+%%
+const ViewAttributeName* findViewAttribute(register const char *str, register unsigned int len)
+{
+    return ViewAttributesHash::findAttributeImpl(str, len);
+}
+
+} //namespace UI
