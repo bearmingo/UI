@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI", "UI\UI.vcproj", "{0C9875AF-B71B-4316-8824-05F551FCE17D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163} = {CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wtf", "thirdpart\wtf\wtf.vcproj", "{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C9875AF-B71B-4316-8824-05F551FCE17D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C9875AF-B71B-4316-8824-05F551FCE17D}.Debug|Win32.Build.0 = Debug|Win32
+		{0C9875AF-B71B-4316-8824-05F551FCE17D}.Release|Win32.ActiveCfg = Release|Win32
+		{0C9875AF-B71B-4316-8824-05F551FCE17D}.Release|Win32.Build.0 = Release|Win32
+		{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}.Debug|Win32.Build.0 = Debug|Win32
+		{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}.Release|Win32.ActiveCfg = Release|Win32
+		{CBCB32DF-F1BC-4B20-AE5E-EDB6D380B163}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
