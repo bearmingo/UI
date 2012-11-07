@@ -6,13 +6,13 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="../thirdpart/release/cairo/include/;&quot;../thirdpart/expat-2.1.0/lib&quot;;../thirdpart/zlib/;&quot;../thirdpart/os-win32/&quot;;../thirdpart/icu/;../thirdpart/jpeg/;../thirdpart/libpng/;../thirdpart/wtf/;./platform/;./platform/animation/;./platform/win/;./platform/text/transcoder/;./platform/cairo/;./platform/text/;&quot;./platform/image-decoders/bmp/&quot;;&quot;./platform/image-decoders/jpeg/&quot;;&quot;./platform/image-decoders/ico/&quot;;&quot;./platform/image-decoders/cairo/&quot;;&quot;./platform/image-decoders/gif/&quot;;&quot;./platform/image-decoders/png/&quot;;&quot;./platform/image-decoders/&quot;;./platform/graphics/;./platform/graphics/opentype;./platform/graphics/cairo/;./platform/graphics/win/;./platform/graphics/transforms;./dom/;./html/canvas/;./html/"
+		AdditionalIncludeDirectories="../thirdpart_lib/cairo/include/;../thirdpart_lib/expat/include/;../thirdpart_lib/zlib/include/;&quot;../thirdpart/os-win32/&quot;;../thirdpart_lib/icu/include/;../thirdpart_lib/libjpeg/include/;../thirdpart_lib/libpng/include/;../thirdpart/wtf/;./platform/;./platform/animation/;./platform/win/;./platform/text/transcoder/;./platform/cairo/;./platform/text/;&quot;./platform/image-decoders/bmp/&quot;;&quot;./platform/image-decoders/jpeg/&quot;;&quot;./platform/image-decoders/ico/&quot;;&quot;./platform/image-decoders/cairo/&quot;;&quot;./platform/image-decoders/gif/&quot;;&quot;./platform/image-decoders/png/&quot;;&quot;./platform/image-decoders/&quot;;./platform/graphics/;./platform/graphics/opentype;./platform/graphics/cairo/;./platform/graphics/win/;./platform/graphics/transforms;./dom/;./html/canvas/;./html/"
 		PreprocessorDefinitions="ENABLE_INSPECTOR=0;WTF_PLATFORM_WIN_CAIRO=1"
 	/>
 	<Tool
 		Name="VCLinkerTool"
 		AdditionalDependencies="Winmm.lib pthreadVC2.lib icuuc.lib icuin.lib cairo.lib libjpeg.lib zlib.lib libpng.lib Usp10.lib shlwapi.lib libexpat.lib Imm32.lib"
-		AdditionalLibraryDirectories="&quot;..\thirdpart\expat-2.1.0\win32\bin\Release\&quot;;..\thirdpart\release\cairo\lib;..\lib\;..\thirdpart\jpeg\;..\thirdpart\zlib\;..\thirdpart\libpng\projects\visualc71\Win32_LIB_Release\"
+		AdditionalLibraryDirectories="..\thirdpart_lib\expat\lib\;..\thirdpart_lib\cairo\lib\;..\thirdpart_lib\pthread\lib\;..\thirdpart_lib\libjpeg\lib\;..\thirdpart_lib\zlib\lib\;..\thirdpart_lib\libpng\lib\;..\thirdpart_lib\icu\lib\"
 		IgnoreDefaultLibraryNames="LIBCMTD.lib;LIBCMT"
 	/>
 </VisualStudioPropertySheet>
