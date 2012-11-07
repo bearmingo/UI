@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="WTFCommon"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="&quot;..\icu-4.6.1\include\&quot;;.\wtf\;.\wtf\threads\;.\wtf\unicode\;&quot;..\os-win32\&quot;;.\"
+		PreprocessorDefinitions="__STD_C;BUILDING_WTF"
+		WarningLevel="1"
+		ForcedIncludeFiles="$(ProjectDir)ICUVersion.h"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="icuuc.lib; icuin.lib"
+		AdditionalLibraryDirectories="&quot;../icu-4.6.1/lib/&quot;"
+	/>
+</VisualStudioPropertySheet>
