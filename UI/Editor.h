@@ -37,7 +37,7 @@ public:
     IntRect firstRectForCharacterInSelectedRange();
 	String getSelectedText();
 
-	void setEditingView(PassRefPtr<View> view) { m_editingView = view; }
+	void setEditingView(PassRefPtr<View> view);
 private:
     WndHost * m_host;
     RefPtr<View> m_editingView;
