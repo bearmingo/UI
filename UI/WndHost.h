@@ -111,8 +111,12 @@ protected:
 	void onLButtonDown(unsigned long flags, const IntPoint&);
 	void onLButtonUp(unsigned long flags, const IntPoint&);
 	void onChar(WPARAM wParam, LPARAM lParam);
+	void onKeyDown(WPARAM wParam, LPARAM lParam);
+	void onKeyUp(WPARAM wParam, LPARAM lParam);
 
 	Editor* editor() const { return &m_editor; }
+
+	void setFocusView(View *focusedView);
 
 protected:
 	void trackingMouseLeave();
@@ -128,6 +132,7 @@ protected:
 	unsigned int m_needLayout: 1;
 
 	RefPtr<View> m_lastHoverView;
+	RefPtr<View> m_focuedView;
 
 	Region m_invalidateRegion;	//需要重新绘图的区域
 

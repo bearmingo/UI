@@ -375,6 +375,12 @@ LRESULT WndHost::handleMessage( UINT msg, WPARAM wparam /*= 0*/, LPARAM lparam /
 	case WM_CHAR:
 		onChar(wparam, lparam);
 		break;
+	case WM_KEYDOWN:
+		onKeyDown(wparam, lparam);
+		break;
+	case WM_KEYUP:
+		onKeyUp(wparam, lparam);
+		break;
 	case WM_CLOSE:
 		RunLoop::main()->stop();
 		break;
@@ -561,6 +567,9 @@ void WndHost::trackingMouseLeave()
 void WndHost::onLButtonDown( unsigned long flags, const IntPoint& p)
 {
 	if (m_lastHoverView.get()) {
+
+		setFocusView(m_lastHoverView.get());
+
 		Event event(UIEvent_ButtonDown, flags, p);
 		m_lastHoverView->onEvent(event);
 		
@@ -578,11 +587,30 @@ void WndHost::onLButtonUp( unsigned long flags, const IntPoint& p)
 	}
 }
 
+void WndHost::onKeyDown( WPARAM wParam, LPARAM lParam )
+{
+	//消息发送给获得焦点的View
+	if (m_focuedView.get()) {
+		Event event(UIEvent_KeyDown, wParam, lParam);
+		m_focuedView->onEvent(event);
+	}
+}
+
+void WndHost::onKeyUp( WPARAM wParam, LPARAM lParam )
+{
+	//消息发送给获得焦点的View
+	if (m_focuedView.get()) {
+		Event event(UIEvent_KeyUp, wParam, lParam);
+		m_focuedView->onEvent(event);
+	}
+}
+
 void WndHost::onChar( WPARAM wParam, LPARAM lParam )
 {
-	if (m_lastHoverView.get()) {
+	//消息发送给获得焦点的View
+	if (m_focuedView.get()) {
 		Event event(UIEvent_Char, wParam, lParam);
-		m_lastHoverView->onEvent(event);
+		m_focuedView->onEvent(event);
 	}
 }
 
@@ -593,12 +621,12 @@ HIMC WndHost::getIMMContext()
 
 void WndHost::prepareCandidateWindow( HIMC hInputContext )
 {
-	IntRect caret;
+	IntRect caret = m_editor.firstRectForCharacterInSelectedRange();
 	CANDIDATEFORM form;
 	form.dwIndex = 0;
 	form.dwStyle = CFS_EXCLUDE;
 	form.ptCurrentPos.x = caret.x();
-	form.ptCurrentPos.y = caret.maxY();
+	form.ptCurrentPos.y = caret.y();
 	form.rcArea.top = caret.y();
 	form.rcArea.bottom = caret.maxY();
 	form.rcArea.left = caret.x();
@@ -767,6 +795,27 @@ bool WndHost::onIMESetContext( WPARAM, LPARAM )
 {
 	return false;
 }
+
+void WndHost::setFocusView(View *focusedView)
+{
+	if (focusedView == m_focuedView)
+		return;
+
+	if (m_focuedView) {
+		Event event(UIEvent_KillFocus);
+		m_focuedView->onEvent(event);
+	}
+
+	m_focuedView = focusedView;
+
+	if (m_focuedView) {
+		Event event(UIEvent_SetFocus);
+		m_focuedView->onEvent(event);
+	}
+}
+
+
+
 
 
 

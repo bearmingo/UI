@@ -11,11 +11,17 @@ class EditView : public View
 {
 	UI_VIEW_DECLARE_CLASS_NAME(TextView, "EditView")
 public:
-    virtual ~EditView() { }
+    virtual ~EditView();
 
     static PassRefPtr<EditView> create() { return adoptRef(new EditView()); }
 
     void setText(const String& text);
+
+	//for get text from ime
+	void onCompositionString(const String& text);
+	void startEdit();
+	void endEdit();
+	IntRect firstRectForCharacterInSelectedRange();
 
     //virtual void measure();
 
@@ -26,13 +32,21 @@ protected:
 	void drawCaret(GraphicsContext *context);
     void advanceAnimation(Timer<EditView> *);
 
+	void onEventChar(UChar ch, unsigned int repeatCount, unsigned int flag);
+	void onEventKeyDown(UChar ch, unsigned int repeatCount, unsigned int flag);
+	void onLButtonDown(const IntPoint& point);
+
+	void updateCaretPosition();
+
     EditView();
 private:
     String m_text;
     Timer<EditView> *m_caretFlashTimer;
     bool m_caretVisible;
     bool m_editing;
-    IntPoint m_caretPosition;
+    IntRect m_caretRect;
+	int m_caretPosAtString;
+
 };
 
 } // namespace UI
