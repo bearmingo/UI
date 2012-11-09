@@ -319,11 +319,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\platform\graphics\DoubleColor.h"
+					RelativePath=".\DoubleColor.h"
 					>
 				</File>
 				<File
-					RelativePath=".\DoubleColor.h"
+					RelativePath=".\platform\graphics\DoubleColor.h"
 					>
 				</File>
 				<File
@@ -1620,6 +1620,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Event.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Event.h"
 				>
 			</File>
@@ -1645,6 +1649,10 @@
 			</File>
 			<File
 				RelativePath=".\FrameHostWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FrameLayout.h"
 				>
 			</File>
 			<File

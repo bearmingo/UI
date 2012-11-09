@@ -19,6 +19,9 @@ EditView::EditView()
 	, m_editing(false)
 	, m_caretFlashTimer(0)
 	, m_caretPosAtString(0)
+	, m_lButtonDown(false)
+	, m_selectedFrom(0)
+	, m_selectedTo(0)
 {
 
 }
@@ -43,7 +46,21 @@ void EditView::draw( GraphicsContext * context, const IntRect& dirtyRect)
 	IntSize textRect(font.width(textRun), font.fontMetrics().height());
 	IntRect content(contentRect());
 
-	context->drawText(font, textRun, FloatPoint(contentX(), contentY() + font.fontMetrics().ascent()));
+	if (m_selectedFrom != m_selectedTo) {
+		int start = std::min(m_selectedFrom, m_selectedTo);
+		int end = std::max(m_selectedFrom, m_selectedTo);
+
+		context->drawHighlightForText(font, textRun, FloatPoint(contentX(), contentY()),  
+			font.fontMetrics().height(), Color("blue"), ColorSpaceDeviceRGB, start, end);
+
+		context->drawText(font, textRun, FloatPoint(contentX(), contentY() + font.fontMetrics().ascent()), 0, start);
+		context->setFillColor(Color::white, ColorSpaceDeviceRGB);
+		context->drawText(font, textRun, FloatPoint(contentX(), contentY() + font.fontMetrics().ascent()), start, end);
+		context->setFillColor(textColor(), ColorSpaceDeviceRGB);
+		context->drawText(font, textRun, FloatPoint(contentX(), contentY() + font.fontMetrics().ascent()), end);
+	} else {
+		context->drawText(font, textRun, FloatPoint(contentX(), contentY() + font.fontMetrics().ascent()));
+	}
 	//context->drawEmphasisMarks(font, textRun, "?", FloatPoint(contentX(), contentY() + font.fontMetrics().height()), 11);
 
 	if (m_editing) {
@@ -62,6 +79,12 @@ bool EditView::onEvent( Event& event )
 	switch (event.id()) {
 	case UIEvent_ButtonDown:
 		onLButtonDown(toIntPoint(event.lparam()));
+		break;
+	case UIEvent_ButtonUp:
+		onLButtonUp(toIntPoint(event.lparam()));
+		break;
+	case UIEvent_MouseMove:
+		onMouseMove(event.wparam(), toIntPoint(event.lparam()));
 		break;
 	case UIEvent_Char:
 		onEventChar((UChar)event.wparam(), (unsigned int)event.lparam() & 0xFFFF, 
@@ -91,10 +114,6 @@ void EditView::drawCaret( GraphicsContext *context )
 //         m_caretFlashTimer = new Timer<EditView>(this, &EditView::advanceAnimation);
 //         m_caretFlashTimer->startRepeating(kCaretFlashEllipse);
 //     }
-
-
-    
-
 
 }
 
@@ -127,7 +146,16 @@ void EditView::onEventChar(UChar ch, unsigned int repeatCount, unsigned int flag
 	if (ch == VK_BACK) {
 		if (m_caretPosAtString == 0)
 			return;
-		else {
+		if (m_selectedFrom != m_selectedTo) {
+			int start = std::min(m_selectedFrom, m_selectedTo);
+			int length = abs(m_selectedFrom - m_selectedTo);
+
+			m_text.remove(start, length);
+
+			m_caretPosAtString -= m_selectedFrom < m_selectedTo ? length : 0;
+
+			m_selectedFrom = m_selectedTo = 0;
+		} else {
 			m_text.remove(m_caretPosAtString - 1);
 			m_caretPosAtString -= 1;
 		}
@@ -151,16 +179,17 @@ EditView::~EditView()
 	}
 }
 
-void EditView::onLButtonDown( const IntPoint& point )
+
+int EditView::calcuateCaretRectFromPoint( const IntPoint& point, IntRect& rc)
 {
 	Font font(fontDescription(), 0, 0);
 	font.update(0);
 
 	if (m_text.length() == 0) {
-		m_caretRect = IntRect(contentX(), contentY(), 0, font.fontMetrics().height());
-		return;
+		rc = IntRect(contentX(), contentY(), 0, font.fontMetrics().height());
+		return 0;
 	}
-	
+
 	TextRun textRun(m_text);
 
 	GlyphBuffer glyphBuffer;
@@ -175,16 +204,48 @@ void EditView::onLButtonDown( const IntPoint& point )
 	for (int i = 0; i < glyphBuffer.size(); i++) {
 		lastX = nextX;
 		nextX += glyphBuffer.advanceAt(i);
-		
+
 		if (point.x() < nextX) {
-			m_caretRect = IntRect(lastX, contentY(), 0, font.fontMetrics().height());
-			m_caretPosAtString = i;
-			return;
+			rc = IntRect(lastX, contentY(), 0, font.fontMetrics().height());
+			return i;
 		}
 	}
 
-	m_caretRect = IntRect(lastX, contentY(), 0, font.fontMetrics().height());
-	m_caretPosAtString = m_text.length();
+	rc = IntRect(nextX, contentY(), 0, font.fontMetrics().height());
+	return textRun.length();
+}
+
+
+void EditView::onLButtonDown( const IntPoint& point )
+{
+	m_caretPosAtString = calcuateCaretRectFromPoint(point, m_caretRect);
+	m_selectedFrom = m_caretPosAtString;
+	m_selectedTo = m_caretPosAtString;
+
+	m_lButtonDown = true;
+}
+
+void EditView::onLButtonUp( const IntPoint& point )
+{
+	if (m_lButtonDown) {
+		m_lButtonDown = false;
+		m_caretPosAtString = calcuateCaretRectFromPoint(point, m_caretRect);
+		if (m_caretPosAtString != m_selectedTo) {
+			m_selectedTo = m_caretPosAtString;
+			invalidate();
+		}
+	}
+}
+
+void EditView::onMouseMove( unsigned int flag, IntPoint& point )
+{
+	if (m_lButtonDown) {
+		m_caretPosAtString = calcuateCaretRectFromPoint(point, m_caretRect);
+		if (m_caretPosAtString != m_selectedTo) {
+			m_selectedTo = m_caretPosAtString;
+			invalidate();
+		}
+	}
 }
 
 void EditView::updateCaretPosition()
@@ -217,16 +278,46 @@ void EditView::onEventKeyDown( UChar ch, unsigned int repeatCount, unsigned int 
 	if (ch == VK_LEFT) {
 		if (m_caretPosAtString == 0)
 			return;
-		m_caretPosAtString -= 1;
 
+		bool shiftKeyDown = Event::isKeyboardShiftDown();
+
+		if (shiftKeyDown) {
+			if (m_selectedFrom == m_selectedTo) {
+				m_selectedFrom = m_caretPosAtString;
+			}
+		}
+
+		m_caretPosAtString -= 1;
 		updateCaretPosition();
+		
+		if (shiftKeyDown) {
+			m_selectedTo = m_caretPosAtString;
+		} else {
+			m_selectedTo = m_selectedFrom = 0;
+		}
+		
 		invalidate();
-	} if (ch == VK_RIGHT) {
+	} else if (ch == VK_RIGHT) {
 		if (m_caretPosAtString == m_text.length())
 			return;
-		m_caretPosAtString += 1;
 
+		bool shiftKeyDown = Event::isKeyboardShiftDown();
+
+		if (shiftKeyDown) {
+			if (m_selectedFrom == m_selectedTo) {
+				m_selectedFrom = m_caretPosAtString;
+			}
+		}
+
+		m_caretPosAtString += 1;
 		updateCaretPosition();
+
+		if (shiftKeyDown) {
+			m_selectedTo = m_caretPosAtString;
+		} else {
+			m_selectedTo = m_selectedFrom = 0;
+		}
+		
 		invalidate();
 	}
 }
@@ -255,9 +346,5 @@ IntRect EditView::firstRectForCharacterInSelectedRange()
 {
 	return m_caretRect;
 }
-
-
-
-
 
 } //namespace UI

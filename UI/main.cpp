@@ -222,9 +222,10 @@ int main(int args, char* argv[])
 	RefPtr<FrameHostWnd> frameHostWnd = FrameHostWnd::create();
 	RefPtr<ViewTree> viewTree = ViewTreeBuild::buildViewTreeFromXmlFile(argv[1]);
 
-	frameHostWnd->createHost(NULL, L"UI-test", WS_OVERLAPPEDWINDOW | WS_VISIBLE, /*WS_EX_LAYERED*/0);
+	frameHostWnd->createHost(NULL, L"UI-test", WS_VISIBLE, /*WS_EX_LAYERED*/WS_EX_APPWINDOW);
 	frameHostWnd->setViewTree(viewTree);
 	frameHostWnd->setTitle(L"Test");
+	//::SetWindowLong(frameHostWnd->GetHWND(), GWL_STYLE, ::GetWindowLong(frameHostWnd->GetHWND(), GWL_STYLE) & ~WS_CAPTION);
 
 	UI::RunLoop *runLoop = UI::RunLoop::main();
 

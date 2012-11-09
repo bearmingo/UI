@@ -58,7 +58,7 @@ void View::draw( GraphicsContext *context , const IntRect& dirtyRect)
 	context->setCompositeOperation(CompositeCopy);
 
 	// draw border
-	IntRect borderRect(x() + 1, y() + 1, width() - 1, height() - 1);
+	FloatRect borderRect(x() + 0.5, y() + 0.5, width(), height());
 	IntRect fill(x(), y(), width(), height());
 
 	context->setStrokeColor(borderColor(), ColorSpaceSRGB);
@@ -68,18 +68,21 @@ void View::draw( GraphicsContext *context , const IntRect& dirtyRect)
 		context->strokeRect(borderRect, layoutParam()->borderSize());
 	} else {
 		Path path;
+		context->setShouldAntialias(true);
 // 		path.addArc(borderRect.minXMinYCorner(), layoutParam()->borderRadius(), 270.0, 180.0, false);
 // 		path.addArc(borderRect.maxXMinYCorner(), layoutParam()->borderRadius(), 270.0, 0.0, false);
 // 		path.addArc(borderRect.maxXMaxYCorner(), layoutParam()->borderRadius(), 0.0, 90.0, false);
 // 		path.addArc(borderRect.minXMaxYCorner(), layoutParam()->borderRadius(), 90.0, 180.0, false);
 		path.addRoundedRect(borderRect, FloatSize(layoutParam()->borderRadius(), layoutParam()->borderRadius()));
-
+	
+		context->setLineCap(RoundCap);
+		context->setStrokeThickness(layoutParam()->borderSize());
 		context->strokePath(path);
 	}
 
-	IntRect clipRect(contentRect());
+	IntRect clipRect(rect());
 
-	context->setFillColor(Color("white"), ColorSpaceSRGB);
+	//context->setFillColor(Color("white"), ColorSpaceSRGB);
 	//context->fillRect(contentRect());
 	context->clip(clipRect);
 

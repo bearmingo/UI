@@ -92,11 +92,13 @@ public:
 	bool onIMESelect(WPARAM, LPARAM);
 	bool onIMESetContext(WPARAM, LPARAM);
 
+	LRESULT onNcCalcSize(WPARAM, LPARAM);
+
 protected:
 	WndHost();
 	virtual LPCTSTR windowClassName() const = 0;
 	virtual LPCTSTR superclassName() const { return NULL; }
-	virtual uint32_t classStyle() const { return 0; }
+	virtual uint32_t classStyle() const { return WS_VISIBLE | CS_DBLCLKS; }
 
 	virtual LRESULT handleMessage(UINT msg, WPARAM wparam = 0, LPARAM lparam = 0);
 	virtual void OnFinalMessage(HWND hwnd);
