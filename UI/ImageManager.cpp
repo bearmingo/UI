@@ -44,14 +44,14 @@ static void XMLCALL startElement(void *userData, const char * name, const char *
 			String nameString = attrs[i]; 
 
 			if (nameString == "file") {
-				sharedBuffer = SharedBuffer::createWithContentsOfFile(attrs[i + 1]);
+				sharedBuffer = SharedBuffer::createWithContentsOfFile(String::fromUTF8(attrs[i + 1]));
 				if (!sharedBuffer)
 					break;
 
 // 				image = BitmapImage::create();
 // 				image->setData(sharedBuffer, true);
 			} else if (nameString == "id") {
-				id = attrs[i + 1];
+				id = String::fromUTF8(attrs[i + 1]);
 			}
 		}
 		if (!id.isEmpty() && !!sharedBuffer) {
