@@ -21,7 +21,7 @@ public:
 	Orientation orientation() const { return m_orientation; }
 	void setOrientation(Orientation o) { m_orientation = o; }
 
-	void layout(const LayoutParam& lp);
+	virtual void layout(const LayoutParam& lp);
 
 	virtual void measure();
 

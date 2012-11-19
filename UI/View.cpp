@@ -58,32 +58,54 @@ void View::draw( GraphicsContext *context , const IntRect& dirtyRect)
 	context->setCompositeOperation(CompositeCopy);
 
 	// draw border
-	IntRect borderRect(x() + 1, y() + 1, width() - 1, height() - 1);
+	FloatRect borderRect(x() + 0.5, y() + 0.5, width(), height());
 	IntRect fill(x(), y(), width(), height());
 
 	context->setStrokeColor(borderColor(), ColorSpaceSRGB);
 	//context->setStrokeStyle(DashedStroke);
 
-	if (layoutParam()->borderRadius() == 0) {
-		context->strokeRect(borderRect, layoutParam()->borderSize());
-	} else {
+// 	if (layoutParam()->borderRadius() == 0) {
+// 		context->strokeRect(borderRect, layoutParam()->borderSize());
+// 	} else {
+	RoundedRect outBorder();
 		Path path;
-// 		path.addArc(borderRect.minXMinYCorner(), layoutParam()->borderRadius(), 270.0, 180.0, false);
-// 		path.addArc(borderRect.maxXMinYCorner(), layoutParam()->borderRadius(), 270.0, 0.0, false);
-// 		path.addArc(borderRect.maxXMaxYCorner(), layoutParam()->borderRadius(), 0.0, 90.0, false);
-// 		path.addArc(borderRect.minXMaxYCorner(), layoutParam()->borderRadius(), 90.0, 180.0, false);
+		context->setShouldAntialias(true);
 		path.addRoundedRect(borderRect, FloatSize(layoutParam()->borderRadius(), layoutParam()->borderRadius()));
+	
+/*	}*/
 
-		context->strokePath(path);
+	IntRect clipRect(rect());
+
+	context->clip(path);
+
+	IntRect backgroundRect;
+	backgroundRect.setX(x() + layoutParam()->borderLeft() / 2 + 0.5);
+	backgroundRect.setY(y() + layoutParam()->borderTop() / 2 + 0.5);
+	backgroundRect.setWidth(width() - (layoutParam()->borderLeft() + layoutParam()->borderRight()) / 2);
+	backgroundRect.setHeight(height() - (layoutParam()->borderTop() + layoutParam()->borderBottom()) / 2);
+
+	if (m_backgroundColor.isValid() && m_backgroundColor.alpha()) {
+		context->save();
+		context->setFillColor(m_backgroundColor, ColorSpaceLinearRGB);
+		context->setAlpha(m_backgroundColor.alpha());
+		//context->fillRect(backgroundRect);
+		context->fillPath(path);
+		context->restore();
 	}
 
-	IntRect clipRect(contentRect());
+	if (!!m_backgroundImage) {
+		context->setShouldAntialias(true);
 
-	context->setFillColor(Color("white"), ColorSpaceSRGB);
-	//context->fillRect(contentRect());
-	context->clip(clipRect);
+		if (m_backgroundImageRepeat == NoRepeat)
+			context->drawImage(m_backgroundImage.get(), ColorSpaceLinearRGB, backgroundRect);
+		else {
+			IntRect imageRect(IntPoint(0, 0), m_backgroundImage->size());
+			context->drawTiledImage(m_backgroundImage.get(), ColorSpaceLinearRGB, backgroundRect, imageRect, FloatSize(1, 1), Image::RepeatTile, Image::RepeatTile);
+		}
+	}
 
-	drawBackground(context, dirtyRect);
+	context->setStrokeThickness(layoutParam()->borderSize());
+	context->strokePath(path);
 
 	context->restore();
 }
@@ -407,30 +429,7 @@ bool View::attributeWithHashName(const ViewAttributeName& name, const String& va
 
 void View::drawBackground( GraphicsContext *context, const IntRect& rc )
 {
-	IntRect backgroundRect;
-	backgroundRect.setX(x() + layoutParam()->borderLeft());
-	backgroundRect.setY(y() + layoutParam()->borderTop());
-	backgroundRect.setWidth(width() - layoutParam()->borderLeft() - layoutParam()->borderRight());
-	backgroundRect.setHeight(height() - layoutParam()->borderTop() - layoutParam()->borderBottom());
 
- 	if (m_backgroundColor.isValid() && m_backgroundColor.alpha()) {
-		context->save();
- 		context->setFillColor(m_backgroundColor, ColorSpaceLinearRGB);
-		context->setAlpha(m_backgroundColor.alpha());
- 		context->fillRect(backgroundRect);
-		context->restore();
- 	}
-
-	if (!!m_backgroundImage) {
-		context->setShouldAntialias(true);
-
-		if (m_backgroundImageRepeat == NoRepeat)
-			context->drawImage(m_backgroundImage.get(), ColorSpaceLinearRGB, contentRect());
-		else {
-			IntRect imageRect(IntPoint(0, 0), m_backgroundImage->size());
-			context->drawTiledImage(m_backgroundImage.get(), ColorSpaceLinearRGB, contentRect(), imageRect, FloatSize(1, 1), Image::RepeatTile, Image::RepeatTile);
-		}
-	}
 
 }
 

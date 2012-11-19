@@ -59,7 +59,7 @@ public:
 	Event(EventID id, WPARAM wparam = 0, LPARAM lparam = 0, View *sender = 0) 
 		: m_id(id)
 		, m_wparam(wparam)
-		, m_lparam(wparam)
+		, m_lparam(lparam)
 		, m_sender(m_sender)
 		, m_isWindowEvent(true)
 	{
@@ -86,8 +86,9 @@ public:
 	bool isWindowEvent() const { return m_isWindowEvent; }
 	void setWindowEvent(bool b) { m_isWindowEvent = b; }
 
-private:
+	static bool isKeyboardShiftDown();
 
+private:
 
 	EventID m_id;
 	String m_name;

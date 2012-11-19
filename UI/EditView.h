@@ -36,7 +36,13 @@ protected:
 	void onEventKeyDown(UChar ch, unsigned int repeatCount, unsigned int flag);
 	void onLButtonDown(const IntPoint& point);
 
+
 	void updateCaretPosition();
+
+	void onLButtonUp(const IntPoint& point);
+	void onMouseMove(unsigned int flag, IntPoint& point);
+
+	int calcuateCaretRectFromPoint(const IntPoint& point, IntRect&);
 
     EditView();
 private:
@@ -47,6 +53,10 @@ private:
     IntRect m_caretRect;
 	int m_caretPosAtString;
 
+	bool m_lButtonDown;
+	//IntRect m_selectedRange;
+	int m_selectedFrom;
+	int m_selectedTo;
 };
 
 } // namespace UI

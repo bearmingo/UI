@@ -227,6 +227,7 @@ bool WndHost::registerSuperclass()
 			return NULL;
 		}
 	}
+
 	m_oldWndProc = wc.lpfnWndProc;
 	wc.lpfnWndProc = WndHost::__controlProc;
 	wc.hInstance = (HINSTANCE)GetModuleHandle(NULL);
@@ -401,6 +402,10 @@ LRESULT WndHost::handleMessage( UINT msg, WPARAM wparam /*= 0*/, LPARAM lparam /
 		break;
 	case WM_IME_SETCONTEXT:
 		handled = onIMESetContext(wparam, lparam);
+		break;
+
+	case WM_NCCALCSIZE:
+		lResult = onNcCalcSize(wparam, lparam);
 		break;
 	default:
 		handled = false;
@@ -814,29 +819,22 @@ void WndHost::setFocusView(View *focusedView)
 	}
 }
 
+LRESULT WndHost::onNcCalcSize( WPARAM wParam, LPARAM lParam)
+{
+	BOOL bCalcValidRects = (BOOL)wParam;
+	NCCALCSIZE_PARAMS* lpncsp = (NCCALCSIZE_PARAMS *)lParam;
 
+	RECT windowRc;
+	GetWindowRect(GetHWND(), &windowRc);
+	//lpncsp->rgrc[0] = windowRc;
+	lpncsp->rgrc[0].left = windowRc.left + 1;
+	lpncsp->rgrc[0].top = windowRc.top;
+	lpncsp->rgrc[0].bottom = windowRc.bottom;
+	lpncsp->rgrc[0].right = windowRc.right - 1;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	LRESULT lResult = 0;//::CallWindowProc(m_oldWndProc, GetHWND(), WM_NCCALCSIZE, wParam, lParam);
+	
+	return lResult;
+}
 
 } //namespace UI

@@ -10,7 +10,7 @@ LayoutParam::LayoutParam()
 	, m_attributeOfHeight(Fixed), m_attributeOfWidth(Fixed)
 	, m_horizontalAlign(AlignLeft)
 	, m_verticalAlign(AlignTop)
-	, m_boldSize(1)
+	, m_boldSize(0)
 	, m_boldRadius(0)
 {
 
