@@ -164,7 +164,7 @@ pip-log.txt
 
 
 # self add
-lib/
-!thirdpart/wtf/
-!thirdpart/os-win32/
-thirdpart/
+/lib/
+!/thirdpart/wtf/
+!/thirdpart/os-win32/
+/thirdpart/
