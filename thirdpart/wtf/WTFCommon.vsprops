@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;..\icu-4.6.1\include\&quot;;.\wtf\;.\wtf\threads\;.\wtf\unicode\;&quot;..\os-win32\&quot;;.\"
+		AdditionalIncludeDirectories="..\..\thirdpart_lib\icu\include\;.\wtf\;.\wtf\threads\;.\wtf\unicode\;&quot;..\os-win32\&quot;;.\"
 		PreprocessorDefinitions="__STD_C;BUILDING_WTF"
 		WarningLevel="1"
 		ForcedIncludeFiles="$(ProjectDir)ICUVersion.h"
